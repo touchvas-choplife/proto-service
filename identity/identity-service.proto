@@ -1,0 +1,109 @@
+// Copyright 2015 gRPC authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+option go_package = "github.com/touchvas-choplife/identity-service/app/grpc/identity";
+package protobuf;
+
+service Identity {
+  rpc GetProfileByID (ProfileID) returns (Profile) {}
+  rpc GetProfileByMsisdn (Msisdn) returns (Profile) {}
+  rpc GetKYCByProfileID (ProfileID) returns (KYC) {}
+  rpc CreateUser (NewUser) returns (ResponseStatus) {}
+  rpc ChangeStatus (StatusRequest) returns (StatusRequest) {}
+  rpc RequestCode (CodeRequest) returns (CodeResponse) {}
+  rpc TokenValidation (VerifyTokenRequest) returns (VerifyTokenResponse) {}
+  rpc GetPINByProfileID (ProfileID) returns (PIN) {}
+  rpc Ping (PingRequest) returns (PongRequest) {}
+}
+
+message PingRequest {}
+
+message PongRequest {
+  int64 Status = 1;
+  string Data = 2;
+}
+
+message ProfileID {
+  int32 profileID = 1;
+}
+
+message Profile {
+  int64 id = 1;
+  int64 status = 2;
+  string firstName = 3;
+  string lastName = 4;
+  int64 msisdn = 5;
+  string created = 6;
+}
+
+message KYC {
+	int64 id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string dateOfBirth = 5;
+  string phoneNumber = 6;
+  repeated string documentUrls = 7;
+  int64 status = 8;
+  string rejectionReason = 9;
+  string createdAt = 10;
+}
+
+message PIN {
+	int64 id = 1;
+  string pin = 2;
+}
+
+message Msisdn {
+  int64 msisdn = 1;
+}
+
+message NewUser {
+  string firstName = 1;
+  string lastName = 2;
+  int64 msisdn = 3;
+}
+
+message ResponseStatus {
+  int64 statusCode = 1;
+  string statusDescription = 2;
+  int64 NewUser = 3;
+  Profile profile = 4;
+}
+
+message StatusRequest{
+  int64 profileID = 1;
+  int32 status = 2;
+  string reason = 3;
+}
+
+message CodeRequest {
+  int64 msisdn = 1;
+}
+
+message CodeResponse {
+  int64 code = 1;
+  string description = 2;
+  int64 status = 3;
+}
+
+message VerifyTokenRequest{
+  int64 profileID = 1;
+  string hash = 2;
+}
+
+message VerifyTokenResponse {
+  int64 status = 1;
+}
