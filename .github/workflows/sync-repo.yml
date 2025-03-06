@@ -1,0 +1,25 @@
+name: Sync Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Mirror push to target repo
+        run: |
+          git clone --bare https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git source_repo.git
+          cd source_repo.git
+          git push --mirror https://x-access-token:${{ secrets.TARGET_REPO_PAT }}@github.com/Choplife-group/${{ github.event.repository.name }}.git
